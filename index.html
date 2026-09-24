@@ -393,6 +393,14 @@ details[open] .mais{transform:rotate(45deg);background:var(--rosa-100);border-co
 .motion .mapa .m-pulso{animation-play-state:paused;visibility:hidden}
 .motion .mapa.in .m-pulso{animation-play-state:running;visibility:visible}
 
+/* celular: uma deslizada para no fim da seção; a próxima entra na seguinte */
+main{position:relative}
+.parada{position:absolute;left:0;width:1px;pointer-events:none}
+@media (max-width:860px){
+  html.motion{scroll-snap-type:y mandatory;scroll-padding-top:0}
+  .parada{scroll-snap-align:start;scroll-snap-stop:always}
+}
+
 </style>
 
 <script>document.documentElement.lang='pt-BR';if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&'IntersectionObserver' in window)document.documentElement.classList.add('motion')</script>
@@ -779,12 +787,27 @@ details[open] .mais{transform:rotate(45deg);background:var(--rosa-100);border-co
     if (tAtual !== tAlvo) requestAnimationFrame(suavizar); else tRodando = false;
   };
 
+  // pontos de parada da rolagem no celular (scroll snap nativo).
+  // As folhas grudam e se movem, então a parada fica em marcadores parados, um por folha.
+  const paradas = folhas.map(() => {
+    const m = document.createElement('div');
+    m.className = 'parada'; m.setAttribute('aria-hidden', 'true');
+    principal.append(m);
+    return m;
+  });
+
   const medir = () => {
     ih = innerHeight;
     pinServ = innerWidth > 860 && ih >= 700;
     raiz.classList.toggle('pin-serv', pinServ);
     serv.style.height = pinServ ? Math.round(ih * (1 + abas.length * 0.7)) + 'px' : '';
     folhas.forEach((f) => { f.style.top = Math.min(0, ih - f.offsetHeight) + 'px'; });
+    let y = 0;
+    folhas.forEach((f, i) => {
+      paradas[i].style.top = y + 'px';
+      paradas[i].style.height = f.offsetHeight + 'px';
+      y += f.offsetHeight;
+    });
 
     // linha do tempo: vai do centro do primeiro marco ao centro do último
     const tb = tempo.getBoundingClientRect();
