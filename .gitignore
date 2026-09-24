@@ -1,0 +1,11 @@
+# só o site publicado vai para o repositório
+*
+!.gitignore
+!index.html
+!img/
+img/*
+!img/isabella.jpg
+!img/sala.jpg
+!img/sofa.jpg
+!img/logo-transparente.webp
+!img/assinatura.css
