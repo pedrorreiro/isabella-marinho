@@ -390,7 +390,7 @@ details[open] .mais{transform:rotate(45deg);background:var(--rosa-100);border-co
 .folha{background:var(--surface)}
 .folha.alt,.folha.contato{background:var(--surface-sunken)}
 .motion .folha{position:sticky}
-.motion .folha:not(.hero){border-radius:32px 32px 0 0;box-shadow:0 -24px 60px -36px rgba(116,64,47,.35)}
+.motion .folha:not(.hero){min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:center;border-radius:32px 32px 0 0;box-shadow:0 -24px 60px -36px rgba(116,64,47,.35)}
 .motion .folha>.wrap,.motion .folha>.serv-pin{transform:scale(calc(1 - var(--c,0) * .05));opacity:calc(1 - var(--c,0) * .55);transform-origin:50% 100%}
 
 /* fio do balão e balões subindo */
@@ -782,7 +782,7 @@ details[open] .mais{transform:rotate(45deg);background:var(--rosa-100);border-co
     // Só depois de seções que ocupam a tela toda (nas curtas, a próxima já aparece embaixo).
     const pausa = Math.round(ih * 0.15);
     folhas.forEach((f, i) => {
-      f.style.marginTop = i > 0 && folhas[i - 1].offsetHeight >= ih - 2 ? pausa + 'px' : '';
+      f.style.marginTop = i > 0 && folhas[i - 1].offsetHeight >= ih * 0.85 ? pausa + 'px' : '';
     });
 
     // linha do tempo: vai do centro do primeiro marco ao centro do último
@@ -859,7 +859,7 @@ details[open] .mais{transform:rotate(45deg);background:var(--rosa-100);border-co
     acende.forEach(({ el, ws }) => {
       const r = el.getBoundingClientRect();
       if (r.bottom < 0 || r.top > ih) return;
-      const k = clamp((ih * 0.88 - r.top) / (ih * 0.42)) * ws.length;
+      const k = clamp((ih * 0.96 - r.top) / (ih * 0.3)) * ws.length;
       ws.forEach((w, i) => { w.style.opacity = (0.16 + 0.84 * clamp(k - i)).toFixed(3); });
     });
 
