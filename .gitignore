@@ -2,6 +2,8 @@
 *
 !.gitignore
 !index.html
+!robots.txt
+!sitemap.xml
 !img/
 img/*
 !img/isabella.jpg
@@ -9,3 +11,8 @@ img/*
 !img/sofa.jpg
 !img/logo-transparente.webp
 !img/assinatura.css
+!img/og.jpg
+!img/favicon.svg
+!img/favicon-48.png
+!img/apple-touch-icon.png
+!img/icon-192.png
