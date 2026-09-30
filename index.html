@@ -761,7 +761,7 @@ details[open] .mais{transform:rotate(45deg);background:var(--rosa-100);border-co
     folhas.forEach((f) => { f.style.top = Math.min(0, ih - f.offsetHeight) + 'px'; });
     // pausa: quando uma seção chega ao fim, ela fica parada um instante antes de a próxima subir.
     // Só depois de seções que ocupam a tela toda (nas curtas, a próxima já aparece embaixo).
-    const pausa = Math.round(ih * 0.3);
+    const pausa = Math.round(ih * 0.15);
     folhas.forEach((f, i) => {
       f.style.marginTop = i > 0 && folhas[i - 1].offsetHeight >= ih - 2 ? pausa + 'px' : '';
     });
