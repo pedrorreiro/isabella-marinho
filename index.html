@@ -785,6 +785,22 @@ details[open] .mais{transform:rotate(45deg);background:var(--rosa-100);border-co
       f.style.marginTop = i > 0 && folhas[i - 1].offsetHeight >= ih * 0.85 ? pausa + 'px' : '';
     });
 
+    // posição "no fluxo" de cada folha (elas grudam, então somamos alturas e pausas)
+    const fluxo = (alvo) => {
+      let t = principal.getBoundingClientRect().top + scrollY;
+      for (const f of folhas) { t += parseFloat(f.style.marginTop) || 0; if (f === alvo) break; t += f.offsetHeight; }
+      return t;
+    };
+    // trecho de rolagem de cada texto que se pinta
+    acende.forEach((a) => {
+      const sec = a.el.closest('.folha'), i = folhas.indexOf(sec), prox = folhas[i + 1];
+      const rel = a.el.getBoundingClientRect().top - sec.getBoundingClientRect().top;
+      a.ini = fluxo(sec) + rel - ih * 0.95;
+      const limite = prox ? fluxo(prox) - ih * 1.04 : Infinity; // a próxima seção entra depois disso
+      a.fim = Math.min(limite, a.ini + ih * 0.6);
+      if (a.fim - a.ini < ih * 0.25) a.ini = a.fim - ih * 0.25;
+    });
+
     // linha do tempo: vai do centro do primeiro marco ao centro do último
     const tb = tempo.getBoundingClientRect();
     const centros = marcos.map((m) => { const r = $('.no', m).getBoundingClientRect(); return r.top + r.height / 2 - tb.top; });
@@ -856,11 +872,12 @@ details[open] .mais{transform:rotate(45deg);background:var(--rosa-100);border-co
     if (!tRodando) { tRodando = true; requestAnimationFrame(suavizar); }
 
     // texto que acende
-    acende.forEach(({ el, ws }) => {
-      const r = el.getBoundingClientRect();
-      if (r.bottom < 0 || r.top > ih) return;
-      const k = clamp((ih * 0.96 - r.top) / (ih * 0.3)) * ws.length;
-      ws.forEach((w, i) => { w.style.opacity = (0.16 + 0.84 * clamp(k - i)).toFixed(3); });
+    // pinta enquanto a pessoa rola: do momento em que o texto entra na tela
+    // até pouco antes de a próxima seção começar a subir (a pausa entra nessa conta)
+    acende.forEach((a) => {
+      if (y < a.ini - ih || y > a.fim + ih) return;
+      const k = clamp((y - a.ini) / Math.max(1, a.fim - a.ini)) * a.ws.length;
+      a.ws.forEach((w, i) => { w.style.opacity = (0.16 + 0.84 * clamp(k - i)).toFixed(3); });
     });
 
     // fio do balão e balões subindo
