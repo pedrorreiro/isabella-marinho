@@ -759,6 +759,12 @@ details[open] .mais{transform:rotate(45deg);background:var(--rosa-100);border-co
     raiz.classList.toggle('pin-serv', pinServ);
     serv.style.height = pinServ ? Math.round(ih * (1 + abas.length * 0.7)) + 'px' : '';
     folhas.forEach((f) => { f.style.top = Math.min(0, ih - f.offsetHeight) + 'px'; });
+    // pausa: quando uma seção chega ao fim, ela fica parada um instante antes de a próxima subir.
+    // Só depois de seções que ocupam a tela toda (nas curtas, a próxima já aparece embaixo).
+    const pausa = Math.round(ih * 0.3);
+    folhas.forEach((f, i) => {
+      f.style.marginTop = i > 0 && folhas[i - 1].offsetHeight >= ih - 2 ? pausa + 'px' : '';
+    });
 
     // linha do tempo: vai do centro do primeiro marco ao centro do último
     const tb = tempo.getBoundingClientRect();
@@ -770,7 +776,7 @@ details[open] .mais{transform:rotate(45deg);background:var(--rosa-100);border-co
     tempoH = centros[centros.length - 1] - centros[0];
     // posições "no fluxo" (as folhas grudam, então medimos pela soma das alturas)
     let topoSec = principal.getBoundingClientRect().top + scrollY;
-    for (const f of folhas) { if (f === formacao) break; topoSec += f.offsetHeight; }
+    for (const f of folhas) { topoSec += parseFloat(f.style.marginTop) || 0; if (f === formacao) break; topoSec += f.offsetHeight; }
     const linhaRel = tb.top - formacao.getBoundingClientRect().top + centros[0];
     tempoIni = topoSec + linhaRel - ih * 0.7;
     tempoFim = topoSec + formacao.offsetHeight - ih * 1.22;
