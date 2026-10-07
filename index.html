@@ -450,7 +450,6 @@ details[open] .mais{transform:rotate(45deg);background:var(--rosa-100);border-co
 /* (2) fio com balõezinhos: um pouco mais largo para caber os balões */
 @media (min-width:1100px){.motion .fio{width:40px}}
 
-
 </style>
 
 <script>document.documentElement.lang='pt-BR';if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&'IntersectionObserver' in window)document.documentElement.classList.add('motion')</script>
@@ -978,6 +977,16 @@ details[open] .mais{transform:rotate(45deg);background:var(--rosa-100);border-co
     const novo = clamp(e.gamma / 35, -1, 1);
     if (Math.abs(novo - inclina) > 0.02) { inclina = novo; acordarMolas(); }
   });
+
+  // a rolagem também empurra os balões: rolar rápido faz eles ficarem para trás e balançarem
+  let ultY = scrollY;
+  addEventListener('scroll', () => {
+    const dy = scrollY - ultY;
+    ultY = scrollY;
+    if (Math.abs(dy) < 1) return;
+    molas.forEach((b, i) => { b.vel += clamp(dy * 0.03, -1.6, 1.6) * (i % 2 ? 1 : -1); });
+    acordarMolas();
+  }, { passive: true });
 
   // o logo do início começa a se desenhar assim que a página abre
   $$('.logo-anim').forEach((el) => el.classList.add('desenhar'));
